@@ -20,7 +20,6 @@
       <scope>provided</scope>
     </dependency>
   	    
-    <!-- http://repo1.maven.org/maven -->
     <dependency>
 	  <groupId>javax.servlet</groupId>
 	  <artifactId>jstl</artifactId>
@@ -44,19 +43,18 @@
 	  <artifactId>el-ri</artifactId>
 	  <version>1.0</version>
 	</dependency>
- 
+	
+	<dependency>
+	  <groupId>rome</groupId>
+	  <artifactId>rome</artifactId>
+	  <version>1.0</version>
+	</dependency>
+	
+ 	
   </dependencies>
   
-<!--   <repositories> -->
-<!--     <repository> -->
-<!--        <id>java.net.m2</id> -->
-<!--        <name>java.net m2 repo</name> -->
-<!--        <url>http://download.java.net/maven/2</url> -->
-<!--      </repository> -->
-<!--   </repositories> -->
-  
   <build>
-    <finalName>JavaServerFaces</finalName>
+    <finalName>Mobile News Reader</finalName>
     
     <plugins>
        <plugin>
