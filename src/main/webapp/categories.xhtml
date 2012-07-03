@@ -28,7 +28,13 @@
 
 		<div data-role="content" id="contentCategories">
 			<ul data-role="listview" data-split-icon="delete"
-				data-split-theme="d" id="currentNews"></ul>
+				data-split-theme="d" id="currentNews">
+				<li id="cat_all_li">
+					<h3><a id="cat_all_a">All</a></h3>
+					<p id="cat_all"></p>
+					<a href="#" data-transition="slideup" id="cat_all_id" />					
+				</li>
+			</ul>
 		</div>
 
 		<div data-role="footer" id="ftrCategories"></div>
