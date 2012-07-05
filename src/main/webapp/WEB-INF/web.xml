@@ -6,7 +6,7 @@
     <param-value>Development</param-value>
   </context-param>
   <welcome-file-list>
-    <welcome-file>faces/categories.xhtml</welcome-file>
+    <welcome-file>faces/news.xhtml</welcome-file>
   </welcome-file-list>
   <servlet>
     <servlet-name>Faces Servlet</servlet-name>

@@ -6,28 +6,33 @@
 
 <h:head>
 	<title>News</title>
+	<title>News</title>
+	<link rel="stylesheet" href="js-css/jquery.mobile-1.1.0.min.css" />
+	<link rel="stylesheet" href="js-css/main.css" />
+	<script src="js-css/jquery-1.7.2.min.js"></script>
+	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
 </h:head>
 <h:body>
-	<!-- News -->
-	<div data-role="header" id="hdrNews" data-nobackbtn="true">
-		<h1>News</h1>
-		<a id="buttonHdrShowCategories" data-icon="arrow-l"
-			class="ui-btn-left" href="" data-role="button" data-inline="true">Back</a>
-	</div>
-
-	<div data-role="content" id="contentNews">
-		<ui:repeat var="#{rssReader.feeds}" value="feed">
-			<h:panelGrid>
-				<h:outputText escape="false" value="#{feed.title}" />
-				<h:outputText escape="false" value="#{feed.description}" />
-			</h:panelGrid>
-		</ui:repeat>
-	</div>
-
-	<div data-role="footer" id="ftrNews">
-		<a id="buttonFtrShowCategories" data-icon="arrow-l"
-			class="ui-btn-left" href="" data-role="button" data-inline="true">Back
-			to News Categories</a>
+	<div data-role="page">
+		<div data-role="header" data-nobackbtn="true">
+			<h1>News</h1>
+			<a data-icon="arrow-l" class="ui-btn-left" href="" data-role="button"
+				data-inline="true">Back</a>
+		</div>
+		<div data-role="content">
+			<ul data-role="listview" data-inset="true">
+				<ui:repeat value="#{rssReader.feeds}" var="feed">
+					<li><a href="#{feed.link}">
+							<h3>
+								<h:outputText escape="false" value="#{feed.title}" />
+							</h3>
+							<div class="preview">
+								<h:outputText escape="false" value="#{feed.description}" />
+							</div>
+					</a></li>
+				</ui:repeat>
+			</ul>
+		</div>
 	</div>
 </h:body>
 

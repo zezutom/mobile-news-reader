@@ -26,6 +26,10 @@ public class RssReader {
 	
 	public static final String DATE_FORMAT = "EEEE MMMM dd, yyyy HH:mm:ss";
 	
+	public String getHi() {
+		return "hi hi";
+	}
+	
 	public List<RssEntry> getFeeds() {
 		return getFeeds(FEED_URL, MAX_COUNT);
 	}
@@ -55,6 +59,7 @@ public class RssReader {
 				// Custom format
 				RssEntry rssEntry = new RssEntry();
 				
+				rssEntry.setLink(syndEntry.getLink());
 				rssEntry.setTitle(syndEntry.getTitle());
 				rssEntry.setAuthor(syndEntry.getAuthor());
 				rssEntry.setDescription(syndEntry.getDescription().getValue());
