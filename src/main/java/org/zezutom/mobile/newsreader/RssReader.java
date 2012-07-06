@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -17,7 +18,7 @@ import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class RssReader {
 	
 	public static final String FEED_URL = "http://rss.news.yahoo.com/rss";
@@ -25,11 +26,17 @@ public class RssReader {
 	public static final int MAX_COUNT = 10;
 	
 	public static final String DATE_FORMAT = "EEEE MMMM dd, yyyy HH:mm:ss";
+
+	private String category;
 	
-	public String getHi() {
-		return "hi hi";
+	public String getCategory() {
+		return category;
 	}
-	
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 	public List<RssEntry> getFeeds() {
 		return getFeeds(FEED_URL, MAX_COUNT);
 	}

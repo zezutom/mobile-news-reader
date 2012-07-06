@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>Categories</title>
+	<link rel="stylesheet" href="js-css/jquery.mobile-1.1.0.min.css" />
+	<link rel="stylesheet" href="js-css/main.css" />
+	<script src="js-css/jquery-1.7.2.min.js"></script>
+	<script src="js-css/newsreader.js"></script>
+	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).bind('ready', function() {
+			init();
+		});
+	</script>
+</h:head>
+<h:body>
+	<div id="home" data-role="page">
+		<div data-role="header" data-nobackbtn="true">
+			<h1>Categories</h1>
+			<a data-icon="plus" class="ui-btn-left" href="#category_add"
+				data-role="button" data-inline="true">Add</a>
+		</div>
+	</div>
+	<div id="category_add" data-role="page">
+		<div data-role="header" data-nobackbtn="true">
+			<h1>Add Category</h1>
+			<a data-icon="arrow-l" class="ui-btn-left" href="#home"
+				data-role="button" data-inline="true">Back</a>
+		</div>
+
+		<div id="category_list" data-role="content">
+			<h:form>
+				<h:selectOneMenu id="category_select" value="#{rssReader.category}">
+					<f:selectItem itemValue='' itemLabel='Make a Choice' />
+					<f:selectItem itemValue='topstories' itemLabel='Top Stories' />
+					<f:selectItem itemValue='us' itemLabel='U.S.' />
+					<f:selectItem itemValue='world' itemLabel='World' />
+				</h:selectOneMenu>
+
+				<h:commandButton>
+					<f:ajax execute="@form" render="news_panel" />
+				</h:commandButton>
+
+				<h:panelGroup id="news_panel">
+					<h2>#{rssReader.category}</h2>
+				</h:panelGroup>				
+			</h:form>
+		</div>
+	</div>
+
+</h:body>
+</html>
