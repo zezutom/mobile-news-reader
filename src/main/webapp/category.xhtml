@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>Categories</title>
+	<link rel="stylesheet" href="js-css/jquery.mobile-1.1.0.min.css" />
+	<link rel="stylesheet" href="js-css/main.css" />
+	<script src="js-css/jquery-1.7.2.min.js"></script>
+	<script src="js-css/newsreader.js"></script>
+	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
+</h:head>
+<h:body>
+	<div id="category_add" data-role="page">
+		<div data-role="header" data-nobackbtn="true">
+			<h1>Add Category</h1>
+			<a data-icon="arrow-l" class="ui-btn-left" href="index.htm"
+				data-role="button" data-inline="true">Back</a>
+		</div>
+
+		<div id="category_list" data-role="content">
+			<h:form>
+				<h:selectOneMenu id="category_select" value="#{rssReader.category}">
+					<f:selectItem itemValue="" itemLabel="Select a Category" />
+					<f:selectItem itemValue="topstories" itemLabel="Top Stories" />
+					<f:selectItem itemValue="us" itemLabel="U.S." />
+					<f:selectItem itemValue="world" itemLabel="World" />
+					<f:selectItem itemValue="politics" itemLabel="Politics" />
+					<f:selectItem itemValue="business" itemLabel="Business" />
+					<f:selectItem itemValue="stocks" itemLabel="Stocks" />
+					<f:selectItem itemValue="economy" itemLabel="U.S. Economy" />
+					<f:selectItem itemValue="eurobiz" itemLabel="European Economy" />
+				</h:selectOneMenu>
+
+				<div id="category_add_button" data-icon="plus" class="ui-btn-left"
+					data-role="button">
+
+					<h:commandLink value="Add Category"
+						style="text-decoration:none; color: black;">
+						<f:ajax execute="category_select" onevent="showNews" />
+					</h:commandLink>
+				</div>
+			</h:form>
+		</div>
+	</div>
+</h:body>
+</html>

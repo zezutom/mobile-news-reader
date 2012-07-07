@@ -13,15 +13,15 @@
 	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
 </h:head>
 <h:body>
-	<div data-role="page">
+	<div id="news" data-role="page">
 		<div data-role="header" data-nobackbtn="true">
 			<h1>News</h1>
-			<a data-icon="arrow-l" class="ui-btn-left" href="" data-role="button"
-				data-inline="true">Back</a>
+			<a data-icon="arrow-l" class="ui-btn-left" href="index.htm"
+				data-role="button" data-inline="true">Back</a>
 		</div>
 		<div data-role="content">
-			<ul data-role="listview" data-inset="true">
-				<ui:repeat value="#{rssReader.feeds}" var="feed">
+			<ui:repeat value="#{rssReader.feeds}" var="feed">
+				<ul data-role="listview" data-inset="true">
 					<li><a href="#{feed.link}">
 							<h3>
 								<h:outputText escape="false" value="#{feed.title}" />
@@ -30,8 +30,8 @@
 								<h:outputText escape="false" value="#{feed.description}" />
 							</div>
 					</a></li>
-				</ui:repeat>
-			</ul>
+				</ul>
+			</ui:repeat>
 		</div>
 	</div>
 </h:body>
