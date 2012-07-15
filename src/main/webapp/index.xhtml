@@ -11,15 +11,24 @@
 	<link rel="stylesheet" href="js-css/main.css" />
 	<script src="js-css/jquery-1.7.2.min.js"></script>
 	<script src="js-css/newsreader.js"></script>
-	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>	
+	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
+	<script src="js-css/jquery.cookie.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageshow', function() {
+			initCategories();
+		});
+	</script>	
 </h:head>
 <h:body>
 	<div id="home" data-role="page">
 		<div data-role="header" data-nobackbtn="true">
 			<h1>Categories</h1>
-			<a id="add_category_link" data-icon="plus" class="ui-btn-left" href="category.htm"
-				data-role="button" data-inline="true" data-ajax="false">Add</a>
+			<a id="add_category_link" data-icon="plus" class="ui-btn-left"
+				href="category.htm" data-role="button" data-inline="true"
+				data-ajax="false">Add</a>
 		</div>
+		<ul id="category_list" data-role="listview" data-inset="true"></ul>
+
 	</div>
 </h:body>
 </html>

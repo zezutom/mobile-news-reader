@@ -11,7 +11,7 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -20,7 +20,7 @@ import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class RssReader {
 
 	public static final String FEED_URL = "http://rss.news.yahoo.com/rss/";
@@ -29,17 +29,11 @@ public class RssReader {
 
 	public static final String DATE_FORMAT = "EEEE MMMM dd, yyyy HH:mm:ss";
 	
-	private String category;
-
-	public void setCategory(String category) {		
-		this.category = category;
-	}
-	
-	public String getCategory() {
-		return category;
-	}
-
 	public List<RssEntry> getFeeds() {
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		Map<String, String> model = context.getRequestParameterMap(); 
+		String category = model.get("category");
+		
 		return getFeeds(getFeedUrl(category), MAX_COUNT);
 	}
 	
