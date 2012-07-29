@@ -12,11 +12,10 @@
 	<script src="js-css/jquery-1.7.2.min.js"></script>
 	<script src="js-css/newsreader.js"></script>
 	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
-	<script src="js-css/jquery.cookie.js"></script>
 	<script type="text/javascript">
-		$(document).bind('pageshow', function() {
-			initCategories();
-		});
+		$(document).bind('pagebeforechange', function(e, data) {
+			changePage(e, data);
+		});		
 	</script>	
 </h:head>
 <h:body>
@@ -27,8 +26,28 @@
 				href="category.htm" data-role="button" data-inline="true"
 				data-ajax="false">Add</a>
 		</div>
-		<ul id="category_list" data-role="listview" data-inset="true"></ul>
-
+		<div data-role="content" />		
+	</div>
+	<div id="delete_category" data-role="page">
+		<div data-role="header">
+			<h1>Delete Category?</h1>
+		</div>
+		<div data-role="content">
+			<center><h2 id="category_prompt">category</h2></center>
+			<form action="#home" method="post" name="delete_category" id="delete_category">
+				<div data-role="fieldcontain">
+					<input type="hidden" name="category_code" id="category_code" value="category" />
+					<div class="ui-grid-a">
+						<div class="ui-block-a">
+							<a href="#home" data-role="button" data-rel="back" data-direction="reverse">Cancel</a>
+						</div>
+						<div class="ui-block-b">
+							<input type="submit" value="Delete" />
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
 	</div>
 </h:body>
 </html>

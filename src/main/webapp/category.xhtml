@@ -9,7 +9,6 @@
 	<link rel="stylesheet" href="js-css/main.css" />
 	<script src="js-css/jquery-1.7.2.min.js"></script>
 	<script src="js-css/newsreader.js"></script>
-	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
 	<script src="js-css/jquery.cookie.js"></script>
 	<script type="text/javascript">
 		$(document).bind('pageinit pagechange', function() {
@@ -18,8 +17,11 @@
 		$(document).bind('pagechange', function() {
 			initCategories();
 		});
-		
+		$(document).bind('mobileinit',function(){
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
+		});		
 	</script>
+	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
 </h:head>
 <h:body>
 	<div id="category_add" data-role="page">
