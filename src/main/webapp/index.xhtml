@@ -11,34 +11,44 @@
 	<link rel="stylesheet" href="js-css/main.css" />
 	<script src="js-css/jquery-1.7.2.min.js"></script>
 	<script src="js-css/newsreader.js"></script>
+	<script type="text/javascript">
+		$(document).bind('mobileinit',function() {
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
+		});		
+	</script>
 	<script src="js-css/jquery.mobile-1.1.0.min.js"></script>
 	<script type="text/javascript">
 		$(document).bind('pagebeforechange', function(e, data) {
 			changePage(e, data);
 		});		
-	</script>	
+	</script>
 </h:head>
 <h:body>
 	<div id="home" data-role="page">
 		<div data-role="header" data-nobackbtn="true">
 			<h1>Categories</h1>
 			<a id="add_category_link" data-icon="plus" class="ui-btn-left"
-				href="category.htm" data-role="button" data-inline="true">Add</a>
+				href="#category_add" data-role="button" data-inline="true">Add</a>
 		</div>
-		<div data-role="content" />		
+		<div data-role="content" />
 	</div>
-	<div id="delete_category" data-role="page">
+	<div id="category_delete" data-role="page">
 		<div data-role="header">
 			<h1>Delete Category?</h1>
 		</div>
 		<div data-role="content">
-			<center><h2 id="category_prompt">category</h2></center>
-			<form action="#home" method="post" name="delete_category" id="delete_category">
+			<center>
+				<h2 id="category_prompt">category</h2>
+			</center>
+			<form action="#home" method="post" name="delete_category"
+				id="delete_category">
 				<div data-role="fieldcontain">
-					<input type="hidden" name="category_code" id="category_code" value="category" />
+					<input type="hidden" name="category_code" id="category_code"
+						value="category" />
 					<div class="ui-grid-a">
 						<div class="ui-block-a">
-							<a href="#home" data-role="button" data-rel="back" data-direction="reverse">Cancel</a>
+							<a href="#home" data-role="button" data-rel="back"
+								data-direction="reverse">Cancel</a>
 						</div>
 						<div class="ui-block-b">
 							<input type="submit" value="Delete" />
@@ -48,5 +58,29 @@
 			</form>
 		</div>
 	</div>
+	<div id="category_add" data-role="page">
+		<div data-role="header" data-nobackbtn="true">
+			<h1>Add Category</h1>
+			<a data-icon="arrow-l" class="ui-btn-left" href="index.htm#home"
+				data-role="button" data-inline="true">Home</a>
+		</div>
+
+		<div id="categories" data-role="content">
+			<select id="category_select">
+				<option value="" selected="selected">Select a Category</option>
+				<option value="topstories">Top Stories</option>
+				<option value="us">U.S.</option>
+				<option value="world">World</option>
+				<option value="politics">Politics</option>
+				<option value="business">Business</option>
+				<option value="stocks">Stocks</option>
+				<option value="economy">U.S. Economy</option>
+				<option value="eurobiz">Economy</option>
+			</select>
+
+			<div id="category_add_button" data-icon="plus" class="ui-btn-left"
+				data-role="button">Add Category</div>
+		</div>
+	</div>	
 </h:body>
 </html>

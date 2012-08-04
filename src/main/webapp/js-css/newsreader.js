@@ -1,8 +1,8 @@
 var categories = new Array();
-var categoryListItem = '<li><a href="news.htm?category=code">title</a><a href="#delete_category?category=code" data-rel="dialog">Delete</a></li>';
+var categoryListItem = '<li><a href="news.htm?category=code">title</a><a href="#category_delete?category=code" data-rel="dialog">Delete</a></li>';
 var defaultCategory = '<li><a href="news.htm">Latest News</a></li>';
 var HOME_PAGE = /^#home/;
-var DELETE_CATEGORY_PAGE = /^#delete_category/;
+var DELETE_CATEGORY_PAGE = /^#category_delete/;
 var firstTime = true;
 
 function changePage(e, data) {
@@ -11,17 +11,17 @@ function changePage(e, data) {
 	var hash = url.hash;
 	
 	if (!hash || _isPage(hash, HOME_PAGE)) {
-		initCategories();
+		_initCategories();
 	}
 	else if (_isPage(hash, DELETE_CATEGORY_PAGE)) {
-		_loadDeleteCategoryDialogue(url);
+		_loadDeleteCategoryDialogue(url);		
 	}
 	
 	if (firstTime) {
-		_initDeleteMenu();		
+		_initDeleteMenu();
+		_initCategoryEditor();
 		firstTime = false;
-	}
-	_initCategoryEditor();
+	}	
 }
 
 function _isPage(hash, page) {
@@ -34,7 +34,7 @@ function _initDeleteMenu() {
 		$.mobile.changePage("#home");
 	});
 }
-function initCategories() {	
+function _initCategories() {	
 	var $page = $('#home');
 	var $content = $page.children(':jqmData(role=content)');
 	var ul = '<ul id="category_list" data-role="listview" data-split-icon="delete">';
@@ -65,7 +65,7 @@ function _initCategoryEditor() {
 		var selection = $('#category_select option:selected');
 		// TODO: add sanity checks
 		_addCategory(selection.val(), selection.text());		
-		$.mobile.changePage('index.htm');		
+		$.mobile.changePage('#home');		
 	});
 }
 
@@ -153,15 +153,8 @@ function _getCategories() {
 	return categories;
 }
 
-function _getCookie() {
-	return categories = $.cookie('categories');
-}
 function _isHome() {
 	return _locationMatches(['\/$', 'index.htm$'])
-}
-
-function _isDeleteCategory() {
-	return false;
 }
 
 function _locationMatches(patterns) {
