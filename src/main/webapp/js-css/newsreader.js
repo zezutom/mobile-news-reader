@@ -1,8 +1,9 @@
 var categories = new Array();
-var categoryListItem = '<li><a href="news.xhtml?category=code">title</a><a href="#delete_category?category=code" data-rel="dialog">Delete</a></li>';
-var defaultCategory = '<li><a href="news.xhtml">Latest News</a></li>';
+var categoryListItem = '<li><a href="news.htm?category=code">title</a><a href="#delete_category?category=code" data-rel="dialog">Delete</a></li>';
+var defaultCategory = '<li><a href="news.htm">Latest News</a></li>';
 var HOME_PAGE = /^#home/;
 var DELETE_CATEGORY_PAGE = /^#delete_category/;
+var firstTime = true;
 
 function changePage(e, data) {
 	var page = data.toPage;
@@ -15,12 +16,24 @@ function changePage(e, data) {
 	else if (_isPage(hash, DELETE_CATEGORY_PAGE)) {
 		_loadDeleteCategoryDialogue(url);
 	}
+	
+	if (firstTime) {
+		_initDeleteMenu();		
+		firstTime = false;
+	}
+	_initCategoryEditor();
 }
 
 function _isPage(hash, page) {
 	return hash.search(page) !== -1;
 }
 
+function _initDeleteMenu() {
+	$('#delete_category').live('submit', function(e, data) {
+		_deleteCategory($('#category_code').val());
+		$.mobile.changePage("#home");
+	});
+}
 function initCategories() {	
 	var $page = $('#home');
 	var $content = $page.children(':jqmData(role=content)');
@@ -47,7 +60,7 @@ function initCategories() {
 	
 }
 
-function initCategoryEditor() {
+function _initCategoryEditor() {
 	$('#category_add_button').bind('click', function() {
 		var selection = $('#category_select option:selected');
 		// TODO: add sanity checks
@@ -76,7 +89,7 @@ function _loadDeleteCategoryDialogue(url) {
 	
 }
 
-function _categoryExists(category) {
+function _existsCategory(category) {
 	var exists = false;
 	var categories = _getCategories();
 	
@@ -89,16 +102,43 @@ function _categoryExists(category) {
 	return exists;
 }
 
+function _findCategory(code) {
+	var index = -1;
+	var categories = _getCategories();
+	
+	for (var i=0; i<categories.length; i++) {
+		if (categories[i].match('^' + code)) {
+			index = i;
+			break;
+		}
+	}
+	return index; 	
+}
+
+function _updateCategories(categories) {
+	localStorage.setItem('categories', JSON.stringify(categories));
+}
+
 function _addCategory(code, title) {
 	var category = code + ':' + title;
 	
-	if (_categoryExists(category)) {
+	if (_existsCategory(category)) {
 		return;
 	}
 	
 	var categories = _getCategories();
 	categories.push(category);
-	localStorage.setItem('categories', JSON.stringify(categories));
+	_updateCategories(categories);
+}
+
+function _deleteCategory(code) {
+	var categories = _getCategories();
+	var index = _findCategory(code);
+	
+	if (index !== -1) {
+		categories.splice(index, 1);
+		_updateCategories(categories);
+	}
 }
 
 function _getCategories() {

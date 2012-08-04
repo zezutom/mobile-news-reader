@@ -11,13 +11,10 @@
 	<script src="js-css/newsreader.js"></script>
 	<script src="js-css/jquery.cookie.js"></script>
 	<script type="text/javascript">
-		$(document).bind('pageinit pagechange', function() {
-			initCategoryEditor();
-		});
 		$(document).bind('pagechange', function() {
 			initCategories();
 		});
-		$(document).bind('mobileinit',function(){
+		$(document).bind('mobileinit',function() {
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
 		});		
 	</script>
@@ -27,7 +24,7 @@
 	<div id="category_add" data-role="page">
 		<div data-role="header" data-nobackbtn="true">
 			<h1>Add Category</h1>
-			<a data-icon="arrow-l" class="ui-btn-left" href="index.htm"
+			<a data-icon="arrow-l" class="ui-btn-left" href="index.htm#home"
 				data-role="button" data-inline="true">Home</a>
 		</div>
 
