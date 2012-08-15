@@ -2,15 +2,16 @@ package org.zezutom.mobile.newsreader.test;
 
 import static org.jboss.arquillian.ajocado.Graphene.jq;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import org.jboss.arquillian.ajocado.Graphene;
 import org.jboss.arquillian.ajocado.framework.GrapheneSelenium;
 import org.jboss.arquillian.ajocado.locator.JQueryLocator;
-import org.jboss.arquillian.ajocado.locator.option.OptionIdLocator;
 import org.jboss.arquillian.ajocado.locator.option.OptionValueLocator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
@@ -30,11 +31,25 @@ public class WebAppIT {
 
 	public static final String LIB_NAME = "lib/%s.jar";
 
+	public static final String IMAGE_NAME = "target/failsafe-reports/%s.png";
+	
+	public static final String PNG = "PNG";
+	
+	public static final String ELEMENT_NOT_FOUND = "No such element found: %s";
+	
+	public static final String ELEMENT_NOT_REMOVED = "The element should have been removed: %s";
+	
 	private static final JQueryLocator DEFAULT_CATEGORY = jq("li:contains('Latest News')");
 	
+	private static final JQueryLocator DEFAULT_CATEGORY_LINK = jq("a:contains('Latest News')");
+		
 	private static final JQueryLocator ADD_CATEGORY_LINK = jq("#add_category_link");
 	
 	private static final JQueryLocator HOME_PAGE = jq("#home");
+	
+	private static final JQueryLocator NEWS_PAGE = jq("#news");
+	
+	private static final JQueryLocator CATEGORY_DELETE_PAGE = jq("#category_delete");
 	
 	private static final JQueryLocator ADD_CATEGORY_PAGE = jq("#category_add");
 
@@ -42,6 +57,16 @@ public class WebAppIT {
 	
 	private static final JQueryLocator ADD_CATEGORY_BUTTON = jq("#category_add_button");
 	
+	private static final JQueryLocator DELETE_CATEGORY_FORM = jq("#delete_category");
+	
+	private static final JQueryLocator CANCEL_CATEGORY_DELETION_BUTTON = jq("#cancel_category_deletion");
+	
+	private static final JQueryLocator CONFIRM_CATEGORY_DELETION_BUTTON = jq("#confirm_category_deletion");
+	
+	private static final JQueryLocator TOP_STORIES_CATEGORY = jq("li:contains('Top Stories')");
+	
+	private static final JQueryLocator TOP_STORIES_DELETE_LINK = jq("li:contains('Top Stories') > a[href^='#category_delete']");
+		
 	private static final String[] CATEGORIES = {"topstories", "us", "world", "politics", "business", "stocks", "economy", "eurobiz"};
 	
 	@ArquillianResource
@@ -61,24 +86,24 @@ public class WebAppIT {
 	@InSequence(1)
 	public void should_have_default_category() {
 		browser.open(deploymentUrl);
-		assertElementVisible(HOME_PAGE, "Home page should be displayed by default");
-		assertElementExists(DEFAULT_CATEGORY, "Default news category should be present");
+		assertElementVisible(HOME_PAGE);
+		assertElementVisible(DEFAULT_CATEGORY);		
 	}
 
 	@Test
 	@InSequence(2)
 	public void should_open_page_to_add_category() {
-		assertElementExists(ADD_CATEGORY_LINK, "Add category button should be present");
+		assertElementVisible(ADD_CATEGORY_LINK);
 		browser.highlight(ADD_CATEGORY_LINK);
 		browser.click(ADD_CATEGORY_LINK);
 		browser.waitForCondition(Graphene.elementVisible.locator(ADD_CATEGORY_PAGE).getJavaScriptCondition(), 2000);
-		assertElementVisible(ADD_CATEGORY_PAGE, "Add Category page should be visible when the Add button is pressed");
+		assertElementVisible(ADD_CATEGORY_PAGE);
 	}
 
 	@Test
 	@InSequence(3)	
 	public void should_list_all_categories() {
-		assertElementVisible(CATEGORY_LIST, "A list of categories should be available when a category is being added");
+		assertElementVisible(CATEGORY_LIST);
 		for (String category : CATEGORIES) {
 			browser.select(CATEGORY_LIST, new OptionValueLocator(category));
 			browser.isSomethingSelected(CATEGORY_LIST);
@@ -90,20 +115,82 @@ public class WebAppIT {
 	@InSequence(4)		
 	public void should_append_new_category() {
 		browser.select(CATEGORY_LIST, new OptionValueLocator(CATEGORIES[0]));
-		browser.highlight(ADD_CATEGORY_BUTTON);
+		assertElementVisible(ADD_CATEGORY_BUTTON);
 		browser.click(ADD_CATEGORY_BUTTON);
-		browser.waitForCondition(Graphene.elementVisible.locator(HOME_PAGE).getJavaScriptCondition(), 2000);
-		assertElementVisible(jq("li:contains('Top Stories')"), "New category should be present on the list.");		
+		waitForPage(HOME_PAGE);
+		assertElementVisible(TOP_STORIES_CATEGORY);		
 	}
 	
-	private void assertElementExists(JQueryLocator element, String message) {
-		assertTrue(message, Graphene.elementPresent.locator(element)
-				.isTrue());
+	@Test
+	@InSequence(5)
+	public void should_present_confirmation_dialogue_to_delete_category() {		
+		assertElementVisible(TOP_STORIES_DELETE_LINK);
+		browser.click(TOP_STORIES_DELETE_LINK);
+		waitForPage(CATEGORY_DELETE_PAGE);
+		assertElementVisible(DELETE_CATEGORY_FORM);
+		
+	}
+	
+	@Test
+	@InSequence(6)
+	public void should_be_able_to_cancel_category_deletion() {
+		assertElementVisible(CANCEL_CATEGORY_DELETION_BUTTON);
+		browser.click(CANCEL_CATEGORY_DELETION_BUTTON);
+		waitForPage(HOME_PAGE);
+		assertElementVisible(TOP_STORIES_CATEGORY);
 	}
 
-	private void assertElementVisible(JQueryLocator element, String message) {
-		assertTrue(message, Graphene.elementVisible.locator(element)
-				.isTrue());
+	@Test
+	@InSequence(7)	
+	public void should_be_able_to_confirm_category_deletion() {
+		assertElementVisible(TOP_STORIES_DELETE_LINK);
+		browser.click(TOP_STORIES_DELETE_LINK);
+		waitForPage(CATEGORY_DELETE_PAGE);
+		assertElementVisible(CONFIRM_CATEGORY_DELETION_BUTTON);
+		browser.click(CONFIRM_CATEGORY_DELETION_BUTTON);
+		waitForPage(HOME_PAGE);
+		captureScreenshot("home_page_after_removal");
+		assertElementNotPresent(TOP_STORIES_CATEGORY);
 	}
 	
+	@Test
+	@InSequence(8)
+	public void should_show_news() {
+		browser.click(DEFAULT_CATEGORY_LINK);
+		waitForPageLoad(NEWS_PAGE);
+//		assertElementVisible(NEWS_PAGE);
+		captureScreenshot("news");
+	}
+	
+	private void assertElementVisible(JQueryLocator element) {
+		assertTrue(String.format(ELEMENT_NOT_FOUND, getElementDescription(element)), Graphene.elementVisible.locator(element).isTrue());
+		browser.highlight(element);
+	}
+
+	private void assertElementNotPresent(JQueryLocator element) {
+		assertTrue(String.format(ELEMENT_NOT_REMOVED, getElementDescription(element)), Graphene.elementNotVisible.locator(element).isTrue());
+	}
+		
+	private void waitForPage(JQueryLocator page) {
+		browser.waitForCondition(Graphene.elementVisible.locator(page).getJavaScriptCondition(), 6000);		
+	}
+
+	private void waitForPageLoad(JQueryLocator page) {
+		browser.waitForCondition(Graphene.elementPresent.locator(page).getJavaScriptCondition(), 6000);
+		browser.waitForPageToLoad();		
+	}
+	
+	private String getElementDescription(JQueryLocator element) {
+		return element.getRawLocator();
+	}
+	
+	private void captureScreenshot(String name) {
+		File output = new File(String.format(IMAGE_NAME, name));
+		try {
+			ImageIO.write(browser.captureScreenshot(), PNG, output);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
