@@ -1,13 +1,14 @@
 package org.zezutom.mobile.newsreader.test;
 
-import static org.jboss.arquillian.ajocado.Graphene.jq;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.jboss.arquillian.ajocado.Graphene.jq;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
@@ -15,8 +16,6 @@ import org.jboss.arquillian.ajocado.Graphene;
 import org.jboss.arquillian.ajocado.framework.GrapheneSelenium;
 import org.jboss.arquillian.ajocado.locator.JQueryLocator;
 import org.jboss.arquillian.ajocado.locator.option.OptionValueLocator;
-import org.jboss.arquillian.ajocado.network.NetworkTraffic;
-import org.jboss.arquillian.ajocado.network.NetworkTrafficType;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
@@ -83,6 +82,8 @@ public class WebAppIT {
 	
 	private static final JQueryLocator FIRST_NEWS_ITEM = jq("#news_list li:first-child");
 	
+	private static final JQueryLocator LINK = jq("a");
+		
 	private static final String[] CATEGORIES = {"topstories", "us", "world", "politics", "business", "stocks", "economy", "eurobiz"};
 	
 	@ArquillianResource
@@ -103,7 +104,8 @@ public class WebAppIT {
 	public void should_have_default_category() {
 		browser.open(deploymentUrl);
 		assertElementVisible(HOME_PAGE);
-		assertElementVisible(DEFAULT_CATEGORY);		
+		assertElementVisible(DEFAULT_CATEGORY);
+		captureScreenshot("001_home_page");
 	}
 
 	@Test
@@ -114,6 +116,7 @@ public class WebAppIT {
 		browser.click(ADD_CATEGORY_LINK);
 		browser.waitForCondition(Graphene.elementVisible.locator(ADD_CATEGORY_PAGE).getJavaScriptCondition(), 2000);
 		assertElementVisible(ADD_CATEGORY_PAGE);
+		captureScreenshot("002_add_category_page");
 	}
 
 	@Test
@@ -125,6 +128,7 @@ public class WebAppIT {
 			browser.isSomethingSelected(CATEGORY_LIST);
 			browser.isVisible(ADD_CATEGORY_BUTTON);
 		}
+		captureScreenshot("003_category_list");
 	}
 
 	@Test
@@ -134,7 +138,8 @@ public class WebAppIT {
 		assertElementVisible(ADD_CATEGORY_BUTTON);
 		browser.click(ADD_CATEGORY_BUTTON);
 		waitForPage(HOME_PAGE);
-		assertElementVisible(TOP_STORIES_CATEGORY);		
+		assertElementVisible(TOP_STORIES_CATEGORY);	
+		captureScreenshot("004_new_category");
 	}
 	
 	@Test
@@ -144,7 +149,7 @@ public class WebAppIT {
 		browser.click(TOP_STORIES_DELETE_LINK);
 		waitForPage(CATEGORY_DELETE_PAGE);
 		assertElementVisible(DELETE_CATEGORY_FORM);
-		
+		captureScreenshot("005_category_deletion_dialogue");
 	}
 	
 	@Test
@@ -154,6 +159,7 @@ public class WebAppIT {
 		browser.click(CANCEL_CATEGORY_DELETION_BUTTON);
 		waitForPage(HOME_PAGE);
 		assertElementVisible(TOP_STORIES_CATEGORY);
+		captureScreenshot("006_category_deletion_cancelled");
 	}
 
 	@Test
@@ -165,8 +171,8 @@ public class WebAppIT {
 		assertElementVisible(CONFIRM_CATEGORY_DELETION_BUTTON);
 		browser.click(CONFIRM_CATEGORY_DELETION_BUTTON);
 		waitForPage(HOME_PAGE);
-		captureScreenshot("home_page_after_removal");
 		assertElementNotPresent(TOP_STORIES_CATEGORY);
+		captureScreenshot("007_category_deletion_confirmed");
 	}
 	
 	@Test
@@ -176,7 +182,7 @@ public class WebAppIT {
 		waitForNewsPage();
 		assertThat(browser.getCount(NEWS_ITEMS), is(NEWS_COUNT));
 		assertNewsItem(FIRST_NEWS_ITEM);		
-		captureScreenshot("news_page");		
+		captureScreenshot("008_news_page");		
 	}
 	
 	private void assertElementVisible(JQueryLocator element) {
@@ -190,10 +196,25 @@ public class WebAppIT {
 		
 	private void assertNewsItem(JQueryLocator item) {
 		browser.highlight(item);
-		//browser.highlight(item.getChild(jq("a")));
-		//browser.highlight(item.getChild(jq("div")));		
+		
+		JQueryLocator links = item.getDescendant(LINK);		
+		Iterator<JQueryLocator> linksIterator = links.iterator();
+		
+		while(linksIterator.hasNext()) {
+			JQueryLocator link = linksIterator.next();
+			assertLink(link);
+		}
+				
 	}
 	
+	private void assertLink(JQueryLocator link) {
+		browser.highlight(link);
+		browser.click(link);
+		browser.waitForPageToLoad(PATIENCE);
+		browser.goBack();
+		browser.waitForPageToLoad(PATIENCE);
+	}
+		
 	private void waitForPage(JQueryLocator page) {
 		browser.waitForCondition(Graphene.elementVisible.locator(page).getJavaScriptCondition(), PATIENCE);		
 	}
