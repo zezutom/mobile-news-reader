@@ -5,7 +5,8 @@
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 	<extension qualifier="graphene">
 		<property name="browser">*safari</property>
-		<property name="seleniumMaximize">true</property>		
+		<property name="seleniumMaximize">true</property>
+		<property name="seleniumSpeed">100</property>		
 	</extension>
 	<container qualifier="jboss7" default="true">
 		<configuration>

@@ -15,6 +15,8 @@ import org.jboss.arquillian.ajocado.Graphene;
 import org.jboss.arquillian.ajocado.framework.GrapheneSelenium;
 import org.jboss.arquillian.ajocado.locator.JQueryLocator;
 import org.jboss.arquillian.ajocado.locator.option.OptionValueLocator;
+import org.jboss.arquillian.ajocado.network.NetworkTraffic;
+import org.jboss.arquillian.ajocado.network.NetworkTrafficType;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
@@ -78,6 +80,8 @@ public class WebAppIT {
 	private static final JQueryLocator NEWS_LIST = jq("#news_list");
 	
 	private static final JQueryLocator NEWS_ITEMS = jq("#news_list > li");
+	
+	private static final JQueryLocator FIRST_NEWS_ITEM = jq("#news_list li:first-child");
 	
 	private static final String[] CATEGORIES = {"topstories", "us", "world", "politics", "business", "stocks", "economy", "eurobiz"};
 	
@@ -171,6 +175,8 @@ public class WebAppIT {
 		browser.click(DEFAULT_CATEGORY_LINK);
 		waitForNewsPage();
 		assertThat(browser.getCount(NEWS_ITEMS), is(NEWS_COUNT));
+		assertNewsItem(FIRST_NEWS_ITEM);		
+		captureScreenshot("news_page");		
 	}
 	
 	private void assertElementVisible(JQueryLocator element) {
@@ -182,6 +188,12 @@ public class WebAppIT {
 		assertTrue(String.format(ELEMENT_NOT_REMOVED, getElementDescription(element)), Graphene.elementNotVisible.locator(element).isTrue());
 	}
 		
+	private void assertNewsItem(JQueryLocator item) {
+		browser.highlight(item);
+		//browser.highlight(item.getChild(jq("a")));
+		//browser.highlight(item.getChild(jq("div")));		
+	}
+	
 	private void waitForPage(JQueryLocator page) {
 		browser.waitForCondition(Graphene.elementVisible.locator(page).getJavaScriptCondition(), PATIENCE);		
 	}
@@ -189,7 +201,7 @@ public class WebAppIT {
 	private void waitForNewsPage() {
 		browser.waitForPageToLoad(PATIENCE);
 		browser.waitForCondition(Graphene.elementPresent.locator(NEWS_PAGE).getJavaScriptCondition(), PATIENCE);
-		browser.waitForCondition(Graphene.elementVisible.locator(NEWS_LIST).getJavaScriptCondition(), PATIENCE);
+		browser.waitForCondition(Graphene.elementVisible.locator(NEWS_LIST).getJavaScriptCondition(), PATIENCE);				
 	}
 	
 	private String getElementDescription(JQueryLocator element) {
