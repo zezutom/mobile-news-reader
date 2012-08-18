@@ -19,8 +19,8 @@
 				data-role="button" data-inline="true">Home</a>
 		</div>
 		<div data-role="content">
-			<ui:repeat value="#{rssReader.feeds}" var="feed">
-				<ul data-role="listview" data-inset="true">
+			<ul id="news_list" data-role="listview" data-inset="true">
+				<ui:repeat value="#{rssReader.feeds}" var="feed">
 					<li><a href="#{feed.link}">
 							<h3>
 								<h:outputText escape="false" value="#{feed.title}" />
@@ -29,8 +29,8 @@
 								<h:outputText escape="false" value="#{feed.description}" />
 							</div>
 					</a></li>
-				</ul>
-			</ui:repeat>
+				</ui:repeat>
+			</ul>
 		</div>
 	</div>
 </h:body>

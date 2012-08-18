@@ -2,6 +2,8 @@ package org.zezutom.mobile.newsreader.test;
 
 import static org.jboss.arquillian.ajocado.Graphene.jq;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +40,12 @@ public class WebAppIT {
 	public static final String ELEMENT_NOT_FOUND = "No such element found: %s";
 	
 	public static final String ELEMENT_NOT_REMOVED = "The element should have been removed: %s";
+
+	// How many milliseconds are we willing to wait for something to happen
+	public static final int PATIENCE = 6000;
+	
+	// How many news items should be displayed
+	public static final int NEWS_COUNT = 10;
 	
 	private static final JQueryLocator DEFAULT_CATEGORY = jq("li:contains('Latest News')");
 	
@@ -66,7 +74,11 @@ public class WebAppIT {
 	private static final JQueryLocator TOP_STORIES_CATEGORY = jq("li:contains('Top Stories')");
 	
 	private static final JQueryLocator TOP_STORIES_DELETE_LINK = jq("li:contains('Top Stories') > a[href^='#category_delete']");
-		
+	
+	private static final JQueryLocator NEWS_LIST = jq("#news_list");
+	
+	private static final JQueryLocator NEWS_ITEMS = jq("#news_list > li");
+	
 	private static final String[] CATEGORIES = {"topstories", "us", "world", "politics", "business", "stocks", "economy", "eurobiz"};
 	
 	@ArquillianResource
@@ -157,9 +169,8 @@ public class WebAppIT {
 	@InSequence(8)
 	public void should_show_news() {
 		browser.click(DEFAULT_CATEGORY_LINK);
-		waitForPageLoad(NEWS_PAGE);
-//		assertElementVisible(NEWS_PAGE);
-		captureScreenshot("news");
+		waitForNewsPage();
+		assertThat(browser.getCount(NEWS_ITEMS), is(NEWS_COUNT));
 	}
 	
 	private void assertElementVisible(JQueryLocator element) {
@@ -172,12 +183,13 @@ public class WebAppIT {
 	}
 		
 	private void waitForPage(JQueryLocator page) {
-		browser.waitForCondition(Graphene.elementVisible.locator(page).getJavaScriptCondition(), 6000);		
+		browser.waitForCondition(Graphene.elementVisible.locator(page).getJavaScriptCondition(), PATIENCE);		
 	}
 
-	private void waitForPageLoad(JQueryLocator page) {
-		browser.waitForCondition(Graphene.elementPresent.locator(page).getJavaScriptCondition(), 6000);
-		browser.waitForPageToLoad();		
+	private void waitForNewsPage() {
+		browser.waitForPageToLoad(PATIENCE);
+		browser.waitForCondition(Graphene.elementPresent.locator(NEWS_PAGE).getJavaScriptCondition(), PATIENCE);
+		browser.waitForCondition(Graphene.elementVisible.locator(NEWS_LIST).getJavaScriptCondition(), PATIENCE);
 	}
 	
 	private String getElementDescription(JQueryLocator element) {
