@@ -10,7 +10,9 @@
 	</extension>
 	<container qualifier="jboss7" default="true">
 		<configuration>
-			<property name="jbossHome">/Users/tom/Programming/jboss-as-7.1.1.Final</property>
+			<property name="jbossHome">/Users/tom/Programming/jboss-as-7.1.1.Final</property>			
+			<property name="seleniumTimeoutDefault">60000</property>
+			<property name="seleniumTimeoutAjax">6000</property>
 		</configuration> 
 	</container>
 </arquillian>

@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.jboss.arquillian.ajocado.Graphene.jq;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.jboss.arquillian.ajocado.Graphene.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +42,6 @@ public class WebAppIT {
 	public static final String ELEMENT_NOT_FOUND = "No such element found: %s";
 	
 	public static final String ELEMENT_NOT_REMOVED = "The element should have been removed: %s";
-
-	// How many milliseconds are we willing to wait for something to happen
-	public static final int PATIENCE = 6000;
 	
 	// How many news items should be displayed
 	public static final int NEWS_COUNT = 10;
@@ -114,7 +112,7 @@ public class WebAppIT {
 		assertElementVisible(ADD_CATEGORY_LINK);
 		browser.highlight(ADD_CATEGORY_LINK);
 		browser.click(ADD_CATEGORY_LINK);
-		browser.waitForCondition(Graphene.elementVisible.locator(ADD_CATEGORY_PAGE).getJavaScriptCondition(), 2000);
+		waitAjax.until(elementVisible.locator(ADD_CATEGORY_PAGE));
 		assertElementVisible(ADD_CATEGORY_PAGE);
 		captureScreenshot("002_add_category_page");
 	}
@@ -210,19 +208,19 @@ public class WebAppIT {
 	private void assertLink(JQueryLocator link) {
 		browser.highlight(link);
 		browser.click(link);
-		browser.waitForPageToLoad(PATIENCE);
+		browser.waitForPageToLoad();
 		browser.goBack();
-		browser.waitForPageToLoad(PATIENCE);
+		browser.waitForPageToLoad();
 	}
 		
 	private void waitForPage(JQueryLocator page) {
-		browser.waitForCondition(Graphene.elementVisible.locator(page).getJavaScriptCondition(), PATIENCE);		
+		waitAjax.until(elementVisible.locator(page));		
 	}
 
 	private void waitForNewsPage() {
-		browser.waitForPageToLoad(PATIENCE);
-		browser.waitForCondition(Graphene.elementPresent.locator(NEWS_PAGE).getJavaScriptCondition(), PATIENCE);
-		browser.waitForCondition(Graphene.elementVisible.locator(NEWS_LIST).getJavaScriptCondition(), PATIENCE);				
+		browser.waitForPageToLoad();
+		waitAjax.until(elementPresent.locator(NEWS_PAGE));
+		waitAjax.until(elementVisible.locator(NEWS_LIST));
 	}
 	
 	private String getElementDescription(JQueryLocator element) {
